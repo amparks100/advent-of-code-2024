@@ -11,7 +11,7 @@ import (
 func main() {
 	fmt.Println("Merry Holiday Time!")
 
-	day1(day1input)
+	day2(day2input)
 }
 
 func day1(input string) {
@@ -70,5 +70,80 @@ func day1(input string) {
 	}
 
 	fmt.Println("Similarity Score:", similarityScore)
+}
 
+func day2(input string) {
+	reports := strings.Split(input, "\n")
+	var totalSafe = 0
+	for _, report := range reports {
+
+		report = strings.TrimSpace(report)
+		if report == "" {
+			continue
+		}
+		fmt.Println("Report:", report)
+		reportSplit := strings.Fields(report)
+		var levels []int
+		for _, level := range reportSplit {
+			num, _ := strconv.Atoi(level)
+			levels = append(levels, num)
+		}
+
+		countIncreasing := 0
+		countDecreasing := 0
+		safe := true
+		importantNumber := len(levels) - 1
+		for index, _ := range levels {
+
+			if index == importantNumber {
+				continue
+			}
+			distance := levels[index] - levels[index+1]
+			if distance > 0 {
+				countDecreasing += 1
+			} else {
+				countIncreasing += 1
+			}
+		}
+		for index, _ := range levels {
+
+			if index == importantNumber {
+				continue
+			}
+			distance := levels[index] - levels[index+1]
+			fmt.Println("Distance:", distance)
+			distance = AbsInt(distance)
+			if distance >= 1 && distance <= 3 {
+				safe = true
+				fmt.Println("safe distance")
+			} else {
+				fmt.Println("Report not safe! - too distant")
+				safe = false
+				break
+			}
+		}
+		if !safe {
+			continue
+		}
+		fmt.Println("Count decreasing:", countDecreasing)
+		fmt.Println("Count increasing:", countIncreasing)
+		if (countDecreasing == importantNumber) || (countIncreasing == importantNumber) {
+			fmt.Println("Report safe! - all same")
+			safe = true
+		} else {
+			safe = false
+		}
+		if safe {
+			fmt.Println("Safe report!")
+			totalSafe += 1
+		}
+	}
+	fmt.Println("Total Safe:", totalSafe)
+}
+
+func AbsInt(n int) int {
+	if n < 0 {
+		return -n
+	}
+	return n
 }
